@@ -1,0 +1,164 @@
+\documentclass[10pt,letter]{article}
+	% basic article document class
+	% use percent signs to make comments to yourself -- they will not show up.
+\usepackage{amsmath}
+\usepackage{amssymb}
+	% packages that allow mathematical formatting
+\usepackage{graphicx}
+	% package that allows you to include graphics
+\usepackage{setspace}
+	% package that allows you to change spacing
+\onehalfspacing
+	% text become 1.5 spaced
+\usepackage{fullpage}
+	% package that specifies normal margins
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\urlstyle{same}
+% \usepackage{siunitx}
+% \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+\usepackage{float}
+\usepackage[autostyle, english=american]{csquotes} \MakeOuterQuote{"} %This line brought to you by Travis
+\usepackage{subfig}
+\usepackage{pdflscape}
+
+\begin{document}
+	% line of code telling latex that your document is beginning
+
+
+\title{2.097 Homework 0}
+
+\author{Isaac Meyer\\
+        Professor Wang}
+
+	% Note: when you omit this command, the current dateis automatically included
+ 
+\maketitle 
+	% tells latex to follow your header (e.g., title, author) commands.
+
+\section*{Overview}
+All code used in this problem set is available on github at: \url{https://github.com/icmeyer/22.211/tree/master/pset6}\\
+
+\section{Finite Difference}
+\[ \frac{\delta u}{\delta t} = k \frac{\delta^2u}{\delta x^2} \]
+We can write the second order derivative using finite differences. Assuming an even mesh spacing we use the following relations. 
+\begin{align*}
+    \frac{du}{dx}\Big|_{n+1/2}=\frac{\Delta u}{\Delta x} = \frac{u_{n+1}-u_n}{x_{n+1}-x_n} \\
+    \frac{d^2u}{dx^2}\Big|_{n} = \frac{d}{dx} \frac{du}{dx}= \frac{u_{n+1}-2u_n+u_{n-1}}{\Delta x^2}
+\end{align*}
+
+This will allow us to write the equation as an ODE. Where $i$ represents the spatial index and $n$ the temporal index.
+\[ \frac{u_i^{n+1}-u_i^n}{\Delta t} = k  \frac{u_{i+1}^n-2u_i^n+u_{i-1}^n}{\Delta x^2} \]
+\[ u^{n+1} = \frac{k \Delta t}{\Delta x^2} (u_{i+1}^n-2u_i^n+u_{i-1}^n) + u_i^n \]
+Writing in this in matrix form with the boundary conditions. Using $C = \frac{k \Delta t}{\Delta x^2}$
+
+\begin{equation}
+\label{eq:F}
+\hspace{-2.5 cm}
+\begin{bmatrix}
+    u_1^{n+1}\\
+    u_2^{n+1}\\
+    \vdots \\
+    u_i^{n+1} \\
+    \vdots \\
+    u_{N-1}^{n+1} \\
+    u_N^{n+1} \\
+\end{bmatrix}
+ =
+\begin{bmatrix}
+    1 & 0 & 0 & 0 & 0 & 0 & 0\\
+    C & -2C & C & 0 & 0 & 0 & 0\\
+    0 & \ddots & \ddots & \ddots & 0 & 0 & 0\\
+    0 & 0 & 0 & 0 & C & -2C & C\\
+    0 & 0 & 0 & 0 & 0 & 0 & 1\\
+\end{bmatrix}
+\begin{bmatrix}
+    u_{left} \\
+    u_2^n \\
+    \vdots \\
+    u_i^n \\
+    \vdots \\
+    u_{N-1}^n \\
+    u_{right} \\
+\end{bmatrix}
++
+\begin{bmatrix}
+    0 \\
+    u_2^n \\
+    \vdots \\
+    u_i^n \\
+    \vdots \\
+    u_{N-1}^n \\
+    0 \\
+\end{bmatrix}
+\end{equation}
+In order for this method to apply we must maintain a stability condition. This condition is given by:
+\[ \frac{4D\Delta t}{\Delta x^2} < 2\]
+My code will throw an error if this condition is not met. 
+
+
+
+
+
+% Examples below
+
+% Figure example
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.05\textwidth]{figures/Figure_1-5.png}
+%     \caption{Problem 5}
+%     \label{fig:5}
+% \end{figure}
+
+% Equations (simple):
+% \[  ]\
+
+
+% Table Example
+% \begin{table}[h]
+% \begin{center}
+% \caption{Numerical Results} \label{tab:fourfactors}
+% \begin{tabular}{ |c|c|c|c|c| } 
+% \hline
+%  & $k_{eff}$ & Peak Fission Source Value & Location of Peak from center [cm] & Iterations\\ 
+% \hline
+% Problem 1 & 0.9546 & 1.5442 & 0.0 & 166 \\
+% \hline
+% Problem 2 & 1.1202 & 1.4627 & 0.0 & 137 \\
+% \hline
+% Problem 3 & 1.1202 & 1.4605 & 0.0 & 137 \\
+% \hline
+% Problem 4 & 0.9784 & 1.4329 & 112.0 & 166 \\
+% \hline
+% Problem 5 & 0.9733 & 1.1124 & 0.0 & 138 \\
+% \hline
+% \end{tabular}
+% \end{center}
+% \end{table}
+
+
+% Code Example
+% \begin{verbatim}
+%     while True:
+%         # Calculate new flux by solving H*phi_1=b_0
+%         phinew = np.dot(hinv,b)]
+%         # Calculate the new k
+%         knew = np.sum(np.dot(fmat,phinew))/np.sum(np.dot(fmat,phiold))*kold
+%         if (tolerance met?):
+%             break
+%         kold = knew
+%         #Normalization step
+%         phiold = normalize(phinew)
+%         phioldsum = phinewsum
+%         #Calculate the new fission source
+%         b = (1/kold)*np.dot(fmat,phiold)
+% \end{verbatim}
+
+\end{document}
+	% line of code telling latex that your document is ending. If you leave this out, you'll get an error

@@ -43,7 +43,7 @@
 	% tells latex to follow your header (e.g., title, author) commands.
 
 \section*{Overview}
-All code used in this problem set is available on github at: \url{https://github.com/icmeyer/22.211/tree/master/pset6}\\
+All code used in this problem set is available on github at: \url{https://github.com/icmeyer/2.097/tree/master/projects/prj_0}\\
 
 \section{Finite Difference}
 \[ \frac{\delta u}{\delta t} = k \frac{\delta^2u}{\delta x^2} \]
@@ -99,7 +99,7 @@ Writing in this in matrix form with the boundary conditions. Using $C = \frac{k 
 \end{bmatrix}
 \end{equation}
 In order for this method to apply we must maintain a stability condition. This condition is given by:
-\[ \frac{4D\Delta t}{\Delta x^2} < 2\]
+\[ \frac{4k\Delta t}{\Delta x^2} < 2\]
 My code will throw an error if this condition is not met. 
 
 
